@@ -116,3 +116,23 @@ class Cache:
     def get_int(self, key: str) -> Union[int, None]:
         """Retrieve an integer from Redis using the given key."""
         return self.get(key, fn=int)
+
+
+def replay(method: Callable) -> None:
+    cache = Cache()
+    input_key = f"{method.__qualname__}:inputs"
+    output_key = f"{method.__qualname__}:outputs"
+
+    inputs = cache._redis.lrange(input_key, 0, -1)
+    outputs = cache._redis.lrange(output_key, 0, -1)
+
+    call_count = cache._redis.get(method.__qualname__)
+    if call_count is None:
+        print(f"{method.__qualname__} was never called.")
+    else:
+        print(f"{method.__qualname__} was called {int(call_count)} times:")
+        for input_data, output_data in zip(inputs, outputs):
+            print(
+                    f"{method.__qualname__}*({input_data.decode()}) -> "
+                    f"{output_data.decode()}"
+            )

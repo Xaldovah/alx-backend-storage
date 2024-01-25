@@ -119,6 +119,15 @@ class Cache:
 
 
 def replay(method: Callable) -> None:
+    """
+    Replay the stored history of inputs and outputs for a given method.
+
+    Args:
+        - method (Callable): The method for which the history is replayed.
+
+        Returns:
+            - None
+    """
     cache = Cache()
     input_key = f"{method.__qualname__}:inputs"
     output_key = f"{method.__qualname__}:outputs"

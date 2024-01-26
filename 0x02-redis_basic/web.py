@@ -4,6 +4,7 @@
 import functools
 import requests
 import redis
+import time
 from typing import Callable
 
 
@@ -62,4 +63,5 @@ def get_page(url: str) -> str:
     """
     response = requests.get(url)
     response.raise_for_status()  # Raise an exception for error status codes
+    time.sleep(2)
     return response.text
